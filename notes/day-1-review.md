@@ -27,17 +27,20 @@ get init >>> git add . >> git commit -m "Initial" >>> gh repo create >> Lots of 
 All done
 
 What are some other ways you might do the same thing?
-
+You can create it on Github than pull it down or merge your local machine into the repo created on github. You can create the Repo as you create the project.
 
 
 ## 2. Services
 
 We began a project in Visual Studio to create a service. What is meant by the term "Service" in software development?
+A thingy that does stuff
 
 Our service exposes an *interface* that other applications can use to drive our service (make it do stuff). This is an
 "Application Programming Interfact". How does an API differ from a "User Interface" (UI)? How are they similiar?
+And API is how programs and in some cases UT's communicate with a database, or another program. They are similiar because both are how something interacts with something else. I.E. API interacts with A database. UI interacts with a Program via API or even directly if you made the program/webpage out of JS.
 
 What are some benefits of exposing a service's interface using the HTTP Protocol?
+The Reach it can have, that they are known to the client and the dev. Also that they are secure.
 
 We "tested" our API three different ways. 
 
@@ -46,10 +49,13 @@ We "tested" our API three different ways.
 3. Automated using an xUnit test project.
 
 Which is the *right* way to do it? Why give preference to automated tests? 
+TDD. But automated so they can check what you are coding as you code. Rather than risking pushing a mistake that could break other code. 1 & 2 also require the tester to know every possible scenario and to not make a mistake while testing.
 
 ### Extra Credit
 
 Have you used any existing HTTP APIs in other projects?
+Yes we use them all the time on the project I am working on for progressive (S2).
 
 Have you created any other HTTP APIs in your own work or studies?
+I only created them in my boot camp, and even had a full API program that called the "populated" information from another program. (If you peek at my gitub repo, Virtual Pet 3 and 4).
 
