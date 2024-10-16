@@ -18,6 +18,15 @@ public class BankAccount
 
     public void Withdraw(decimal amountToWithdraw)
     {
-        _balance += amountToWithdraw;
+        if (_balance - amountToWithdraw >= 0)
+        {
+            _balance -= amountToWithdraw;
+        }
+        else
+        {
+            throw new AccountOverdraftException();
+        }
+
     }
 }
+public class AccountOverdraftException : ArgumentOutOfRangeException;

@@ -19,6 +19,16 @@ public class MakingWithdrawls
         // Then
         var endingBalance = account.GetBalance();
 
-        Assert.Equal(amountToWithdraw + openingBalance, endingBalance);
+        Assert.Equal(openingBalance - amountToWithdraw, endingBalance);
+    }
+    [Fact]
+    public void CustomerCannTakeTheirFullBalance()
+    {
+        var account = new BankAccount();
+        var openingBalance = account.GetBalance();
+
+        account.Withdraw(openingBalance);
+
+        Assert.Equal(0, account.GetBalance());
     }
 }
