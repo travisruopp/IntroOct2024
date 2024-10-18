@@ -3,12 +3,22 @@
 
 namespace Banking.Domain;
 
-public class BankAccount
+public class BankAccount(ICalculateBonusesForDeposits calculator)
 {
-    private decimal _balance = 5000M;
+    private decimal _balance = 7000M;
+    //private ICalculateBonusesForDeposits calculator;
+
+    //public BankAccount(ICalculateBonusesForDeposits calculator)
+    //{
+    //    this.calculator = calculator;
+    //}
+
     public void Deposit(decimal amountToDeposit)
     {
-        _balance += amountToDeposit;
+
+        decimal bonus = calculator.CalculateBonusForDepositOn(_balance, amountToDeposit);
+
+        _balance += amountToDeposit + bonus;
     }
 
     public decimal GetBalance()
@@ -18,7 +28,7 @@ public class BankAccount
 
     public void Withdraw(decimal amountToWithdraw)
     {
-        if (_balance - amountToWithdraw >= 0)
+        if (_balance >= amountToWithdraw)
         {
             _balance -= amountToWithdraw;
         }
@@ -26,7 +36,7 @@ public class BankAccount
         {
             throw new AccountOverdraftException();
         }
-
     }
 }
+
 public class AccountOverdraftException : ArgumentOutOfRangeException;

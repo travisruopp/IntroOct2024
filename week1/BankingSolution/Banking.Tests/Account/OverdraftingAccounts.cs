@@ -1,4 +1,6 @@
 ﻿using Banking.Domain;
+using Banking.Tests.TestDoubles;
+
 
 namespace Banking.Tests.Account;
 public class OverdraftingAccounts
@@ -6,7 +8,7 @@ public class OverdraftingAccounts
     [Fact]
     public void OverdraftIsNotAllowed()
     {
-        var account = new BankAccount();
+        var account = new BankAccount(new DummyBonusCalculator());
         var openingBalance = account.GetBalance();
 
         try
@@ -16,7 +18,7 @@ public class OverdraftingAccounts
         catch
         {
 
-
+            // swallowing any exceptions because the assert is an invariant.
         }
 
         Assert.Equal(openingBalance, account.GetBalance());
@@ -25,10 +27,12 @@ public class OverdraftingAccounts
     [Fact]
     public void OverdraftThrows()
     {
-        var account = new BankAccount();
+        var account = new BankAccount(new DummyBonusCalculator());
         var openingBalance = account.GetBalance();
 
-        Assert.Throws<AccountOverdraftException>(() => account.Withdraw(openingBalance + .01M));
-    }
 
+        Assert.Throws<AccountOverdraftException>(
+            () => account.Withdraw(openingBalance + .01M));
+
+    }
 }
