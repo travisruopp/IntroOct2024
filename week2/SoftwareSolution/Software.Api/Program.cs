@@ -1,3 +1,5 @@
+using Marten;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +8,13 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+var connectionString = builder.Configuration.GetConnectionString("catalog") ?? throw new Exception("No Connection String");
+
+builder.Services.AddMarten(cfg =>
+{
+    cfg.Connection(connectionString);
+}).UseLightweightSessions();
 
 var app = builder.Build();
 
