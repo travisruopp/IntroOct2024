@@ -4,42 +4,28 @@ import {
   signal,
   computed,
 } from '@angular/core';
-
-type TransactionRecord = {
-  id: string;
-  startingBalance: number;
-  type: 'deposit' | 'withdrawal';
-  amount: number;
-  newBalance: number;
-};
+import { TransactionHistoryComponent } from './components/transaction-history.component';
+import { TransactionRecord } from './types';
+import { CurrencyPipe } from '@angular/common';
+import { BankingSuccessNotificationComponent } from './components/banking-success-notification.component';
+import { BankingTransactionInputComponent } from './components/banking-transaction-input.component';
 
 @Component({
   selector: 'app-banking',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [],
+  imports: [
+    TransactionHistoryComponent,
+    BankingSuccessNotificationComponent,
+    BankingTransactionInputComponent,
+  ],
   template: `
     <div>
       <p>Your Balance is {{ balance() }}</p>
       @if(isGoldAccount()){
-      <div role="alert" class="alert alert-success">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6 shrink-0 stroke-current"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg>
-        <span
-          >You have a gold account! Your next deposit will get a bonus!</span
-        >
-      </div>
+      <app-banking-success-notification
+        message="You are a Gold Account! You'll get a BONUS on your next deposit!"
+      />
       } @else {
       <div role="alert" class="alert alert-success">
         <svg
@@ -62,62 +48,16 @@ type TransactionRecord = {
       </div>
       }
       <div>
-        <input
-          #depositAmount
-          class="input"
-          class="input input-bordered"
-          type="number"
-        /><button
-          (click)="deposit(depositAmount.valueAsNumber)"
-          class="btn btn-primary"
-        >
-          Deposit
-        </button>
-        <input
-          #withdrawalAmount
-          class="input"
-          class="input input-bordered"
-          type="number"
-        /><button
-          (click)="withdraw(withdrawalAmount.valueAsNumber)"
-          class="btn btn-primary"
-        >
-          Withdraw
-        </button>
+        <app-banking-transaction-input
+          label="Deposit"
+          (transaction)="deposit($event)"
+        />
+        <app-banking-transaction-input
+          label="Withdraw"
+          (transaction)="withdraw($event)"
+        />
       </div>
-      <div class="overflow-x-auto">
-        <table class="table">
-          <!-- head -->
-          <thead>
-            <tr>
-              <th>Id</th>
-              <th>Balance Before</th>
-              <th>Transaction Type</th>
-              <th>Amount of Transaction</th>
-              <th>New Balance</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for(tx of history(); track tx.id) {
-            <tr class="bg-base-200">
-              <th>{{ tx.id }}</th>
-              <td>{{ tx.startingBalance }}</td>
-              <td>
-                @if(tx.type === 'deposit') {
-                <span>👆</span>
-                } @else {
-                <span>👇</span>
-                }
-              </td>
-              <td>{{ tx.amount }}</td>
-              <td>{{ tx.newBalance }}</td>
-            </tr>
-            } @empty {
-            <p>No Transactions Yet!</p>
-            }
-          </tbody>
-        </table>
-      </div>
+      <app-banking-transaction-history [historyToDisplay]="history()" />
     </div>
   `,
   styles: ``,
@@ -152,6 +92,7 @@ export class BankingComponent {
       newBalance: this.balance() - amount,
       type: 'withdrawal',
     };
+    this.history.set([newTransaction, ...this.history()]);
     this.balance.update((b) => b - amount);
   }
 }
