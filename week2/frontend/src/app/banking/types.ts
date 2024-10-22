@@ -1,7 +1,10 @@
+export type TransactionType = 'deposit' | 'withdrawal';
+
 export type TransactionRecord = {
   id: string;
   startingBalance: number;
-  type: 'deposit' | 'withdrawal';
+  type: TransactionType;
   amount: number;
   newBalance: number;
+  created: number;
 };

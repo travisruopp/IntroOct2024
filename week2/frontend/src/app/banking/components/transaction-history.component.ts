@@ -5,13 +5,13 @@ import {
   input,
 } from '@angular/core';
 import { TransactionRecord } from '../types';
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-banking-transaction-history',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CurrencyPipe],
+  imports: [CurrencyPipe, DatePipe],
   template: `
     <div class="overflow-x-auto">
       <table class="table">
@@ -28,7 +28,7 @@ import { CurrencyPipe } from '@angular/common';
         <tbody>
           @for(tx of historyToDisplay(); track tx.id) {
           <tr class="bg-base-200">
-            <th>{{ tx.id }}</th>
+            <th [title]="tx.id">{{ tx.created | date : 'medium' }}</th>
             <td>{{ tx.startingBalance | currency }}</td>
             <td>
               @if(tx.type === 'deposit') {
@@ -37,7 +37,7 @@ import { CurrencyPipe } from '@angular/common';
               <span>👇</span>
               }
             </td>
-            <td>{{ tx.amount | currency }}</td>
+            <td class="text-right">{{ tx.amount | currency }}</td>
             <td>{{ tx.newBalance | currency }}</td>
           </tr>
           } @empty {
