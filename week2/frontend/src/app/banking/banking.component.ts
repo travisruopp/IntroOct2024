@@ -3,12 +3,16 @@ import {
   ChangeDetectionStrategy,
   signal,
   computed,
+  inject,
 } from '@angular/core';
 import { TransactionHistoryComponent } from './components/transaction-history.component';
 import { TransactionRecord } from './types';
 import { CurrencyPipe } from '@angular/common';
 import { BankingSuccessNotificationComponent } from './components/banking-success-notification.component';
 import { BankingTransactionInputComponent } from './components/banking-transaction-input.component';
+import { RouterOutlet } from '@angular/router';
+import { BankingNavComponent } from './components/banking-nav-component';
+import { BankingStore } from './services/banking.store';
 
 @Component({
   selector: 'app-banking',
@@ -18,11 +22,14 @@ import { BankingTransactionInputComponent } from './components/banking-transacti
     TransactionHistoryComponent,
     BankingSuccessNotificationComponent,
     BankingTransactionInputComponent,
+    RouterOutlet,
+    BankingNavComponent,
   ],
   template: `
+    <app-banking-nav />
     <div>
-      <p>Your Balance is {{ balance() }}</p>
-      @if(isGoldAccount()){
+      <p>Your Balance is {{ store.balance() }}</p>
+      @if(store.isGoldAccount()){
       <app-banking-success-notification
         message="You are a Gold Account! You'll get a BONUS on your next deposit!"
       />
@@ -42,57 +49,56 @@ import { BankingTransactionInputComponent } from './components/banking-transacti
           />
         </svg>
         <span
-          >If you deposit {{ moneyTillGoldAccount() }} you will be a gold
+          >If you deposit {{ store.amountNeededToBeGold() }} you will be a gold
           account!</span
         >
       </div>
       }
+
       <div>
         <app-banking-transaction-input
           label="Deposit"
-          (transaction)="deposit($event)"
+          (transaction)="store.deposit($event)"
         />
         <app-banking-transaction-input
           label="Withdraw"
-          (transaction)="withdraw($event)"
+          (transaction)="store.withdraw($event)"
         />
       </div>
-      <app-banking-transaction-history [historyToDisplay]="history()" />
+      <router-outlet />
     </div>
   `,
   styles: ``,
 })
 export class BankingComponent {
-  balance = signal(0);
+  store = inject(BankingStore);
 
-  history = signal<TransactionRecord[]>([]);
+  // history = signal<TransactionRecord[]>([]);
 
-  goldAccountCutoff = signal(5000);
-  isGoldAccount = computed(() => this.balance() >= this.goldAccountCutoff());
-  moneyTillGoldAccount = computed(
-    () => this.goldAccountCutoff() - this.balance()
-  );
-  deposit(amount: number) {
-    const newTransaction: TransactionRecord = {
-      id: crypto.randomUUID(),
-      amount: amount,
-      startingBalance: this.balance(),
-      newBalance: this.balance() + amount,
-      type: 'deposit',
-    };
-    this.history.set([newTransaction, ...this.history()]);
-    this.balance.update((b) => b + amount);
-  }
+  // goldAccountCutoff = signal(5000);
+  // isGoldAccount = computed(() => this.balance() >= this.goldAccountCutoff());
+  // moneyTillGoldAccount = computed(() => 5000 - this.balance());
+  // deposit(amount: number) {
+  //   const newTransaction: TransactionRecord = {
+  //     id: crypto.randomUUID(),
+  //     amount: amount,
+  //     startingBalance: this.balance(),
+  //     newBalance: this.balance() + amount,
+  //     type: 'deposit',
+  //   };
+  //   this.history.set([newTransaction, ...this.history()]);
+  //   this.store.deposit(amount);
+  // }
 
-  withdraw(amount: number) {
-    const newTransaction: TransactionRecord = {
-      id: crypto.randomUUID(),
-      amount: amount,
-      startingBalance: this.balance(),
-      newBalance: this.balance() - amount,
-      type: 'withdrawal',
-    };
-    this.history.set([newTransaction, ...this.history()]);
-    this.balance.update((b) => b - amount);
-  }
+  // withdraw(amount: number) {
+  //   const newTransaction: TransactionRecord = {
+  //     id: crypto.randomUUID(),
+  //     amount: amount,
+  //     startingBalance: this.balance(),
+  //     newBalance: this.balance() - amount,
+  //     type: 'withdrawal',
+  //   };
+  //   this.history.set([newTransaction, ...this.history()]);
+  //   this.store.withdraw(amount);
+  // }
 }
