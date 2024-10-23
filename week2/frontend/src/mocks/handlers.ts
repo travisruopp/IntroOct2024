@@ -1,1 +1,3 @@
-export const handlers = [];
+import bankHandler from './banking-handler';
+
+export const handlers = [...bankHandler];

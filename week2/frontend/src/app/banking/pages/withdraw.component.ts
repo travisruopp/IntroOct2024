@@ -14,7 +14,7 @@ import { BankingStore } from '../services/banking.store';
   imports: [BankingTransactionInputComponent],
   template: `
     <h1 class="text-2xl font-black">
-      Make a Withdrawal (Up to {{ store.balance() }})
+      Make a Withdrawal (up to {{ store.balance() }})
     </h1>
     @if(hasOverdraftWarning()) {
     <div class="alert alert-information">
@@ -30,7 +30,6 @@ import { BankingStore } from '../services/banking.store';
 })
 export class WithdrawComponent {
   store = inject(BankingStore);
-
   hasOverdraftWarning = signal(false);
   withdraw(amount: number) {
     if (this.store.balance() >= amount) {

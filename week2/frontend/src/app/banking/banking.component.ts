@@ -1,18 +1,13 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  signal,
-  computed,
-  inject,
-} from '@angular/core';
-import { TransactionHistoryComponent } from './components/transaction-history.component';
-import { TransactionRecord } from './types';
 import { CurrencyPipe } from '@angular/common';
-import { BankingSuccessNotificationComponent } from './components/banking-success-notification.component';
-import { BankingTransactionInputComponent } from './components/banking-transaction-input.component';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { BankingNavComponent } from './components/banking-nav-component';
+import { BankingSuccessNotificationComponent } from './components/banking-success-notification.component';
+import { BankingTransactionInputComponent } from './components/banking-transaction-input.component';
+import { TransactionHistoryComponent } from './components/transaction-history.component';
 import { BankingStore } from './services/banking.store';
+
+// id, starting balance , type (deposit | withdraw), amount, new balance
 
 @Component({
   selector: 'app-banking',
@@ -31,20 +26,26 @@ import { BankingStore } from './services/banking.store';
     <app-banking-nav />
     <div>
       <p>Your Balance is {{ store.balance() | currency }}</p>
-    </div>
 
-    <div class="p-12">
-      <a routerLink="deposit" class="m-8 btn btn-lg btn-success"
-        >Make a Deposit</a
-      >
-      <a routerLink="withdrawal" class="m-8 btn btn-lg btn-success"
-        >Make a Withdrawal</a
-      >
+      <div class="p-12">
+        <a routerLink="deposit" class="m-8 btn btn-lg btn-success"
+          >Make a Deposit</a
+        >
+        @if(store.balance() === 0){
+        <p>You got no money!</p>
+        } @else {
+        <a routerLink="withdrawal" class="m-8 btn btn-lg btn-success"
+          >Make a Withdrawal</a
+        >
+        }
+      </div>
+      <router-outlet />
     </div>
-    <router-outlet />
   `,
   styles: ``,
 })
 export class BankingComponent {
   store = inject(BankingStore);
+
+  constructor() {}
 }
