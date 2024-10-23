@@ -16,6 +16,15 @@ builder.Services.AddMarten(cfg =>
     cfg.Connection(connectionString);
 }).UseLightweightSessions();
 
+builder.Services.AddCors(b =>
+{
+    b.AddDefaultPolicy(pol =>
+    {
+        pol.AllowAnyOrigin();
+        pol.AllowAnyMethod();
+        pol.AllowAnyHeader();
+    });
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
