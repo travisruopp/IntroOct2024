@@ -1,11 +1,12 @@
 import { CurrencyPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { BankingNavComponent } from './components/banking-nav-component';
+
 import { BankingSuccessNotificationComponent } from './components/banking-success-notification.component';
 import { BankingTransactionInputComponent } from './components/banking-transaction-input.component';
 import { TransactionHistoryComponent } from './components/transaction-history.component';
 import { BankingStore } from './services/banking.store';
+import { BankingNavComponent } from './components/banking-nav.component';
 
 // id, starting balance , type (deposit | withdraw), amount, new balance
 
@@ -24,8 +25,14 @@ import { BankingStore } from './services/banking.store';
   ],
   template: `
     <app-banking-nav />
+    @if(store.loaded()) {
     <div>
-      <p>Your Balance is {{ store.balance() | currency }}</p>
+      <p>
+        Your Balance is {{ store.balance() | currency }}
+        @if(store.hasPendingTransactions()) {
+        <small>Note: Some transactions are pending, yo.</small>
+        }
+      </p>
 
       <div class="p-12">
         <a routerLink="deposit" class="m-8 btn btn-lg btn-success"
@@ -41,6 +48,9 @@ import { BankingStore } from './services/banking.store';
       </div>
       <router-outlet />
     </div>
+    } @else {
+    <span class="loading loading-bars loading-lg"></span>
+    }
   `,
   styles: ``,
 })

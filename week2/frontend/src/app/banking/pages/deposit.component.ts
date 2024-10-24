@@ -32,9 +32,8 @@ import { RouterLink } from '@angular/router';
       label="Deposit Amount"
       (transaction)="store.deposit($event)"
     />
-    <div>
-      <a routerLink="/banking" class=" btn btn-primary">Done with Deposits</a>
-    </div>
+
+    <a routerLink="/banking" class="btn btn-primary">Done Making Deposits</a>
   `,
   styles: ``,
 })

@@ -8,3 +8,7 @@ export type TransactionRecord = {
   newBalance: number;
   created: number;
 };
+
+export type TransactionRecordModel = TransactionRecord & {
+  pending: boolean;
+};

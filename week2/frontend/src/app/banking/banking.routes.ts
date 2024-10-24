@@ -2,19 +2,18 @@ import { Routes } from '@angular/router';
 import { BankingComponent } from './banking.component';
 import { StatementComponent } from './pages/statement.component';
 import { BankingStore } from './services/banking.store';
-import { DepositComponent } from './pages/deposit.component';
 import { WithdrawComponent } from './pages/withdraw.component';
-import { HttpClient } from '@angular/common/http';
+import { DepositComponent } from './pages/deposit.component';
 import { BankDataService } from './services/bank-data.service';
 
 export const BANKING_ROUTES: Routes = [
   {
-    path: '',
+    path: '', // /banking
     component: BankingComponent,
-    providers: [BankingStore, BankDataService], // program.cs builder.services.AddScoped<BankingStore>();
+    providers: [BankingStore, BankDataService],
     children: [
       {
-        path: 'statement',
+        path: 'statement', // banking/statement
         component: StatementComponent,
       },
       {

@@ -20,14 +20,15 @@ import {
     <form [formGroup]="form" (ngSubmit)="doTransaction()">
       <input
         name="transaction-amount"
+        (change)="logIt($event)"
         class="input input-bordered"
         type="number"
         formControlName="transactionAmount"
       /><button type="submit" class="btn btn-primary">
         <label for="transaction-amount"> {{ label() }} </label>
       </button>
-      @if(form.invalid && (form.controls.transactionAmount.dirty ||
-      form.controls.transactionAmount.touched)) {
+      @if ( form.invalid && (form.controls.transactionAmount.dirty ||
+      form.controls.transactionAmount.touched) ) {
       <span role="alert" class="alert alert-error">Errors</span>
       }
     </form>
@@ -49,5 +50,9 @@ export class BankingTransactionInputComponent {
       this.transaction.emit(amount);
       this.form.reset();
     }
+  }
+
+  logIt(event: any) {
+    console.log(event);
   }
 }

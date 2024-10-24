@@ -4,7 +4,7 @@ import {
   signal,
   input,
 } from '@angular/core';
-import { TransactionRecord } from '../types';
+import { TransactionRecord, TransactionRecordModel } from '../types';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 
 @Component({
@@ -37,7 +37,15 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
               <span>👇</span>
               }
             </td>
-            <td class="text-right">{{ tx.amount | currency }}</td>
+            <td class="text-right">
+              @if(tx.pending) {
+              {{ tx.amount | currency }}
+              <span class="loading loading-bars loading-xs"></span>
+
+              } @else {
+              {{ tx.amount | currency }}
+              }
+            </td>
             <td>{{ tx.newBalance | currency }}</td>
           </tr>
           } @empty {
@@ -50,5 +58,5 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
   styles: ``,
 })
 export class TransactionHistoryComponent {
-  historyToDisplay = input.required<TransactionRecord[]>();
+  historyToDisplay = input.required<TransactionRecordModel[]>();
 }
