@@ -1,5 +1,5 @@
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
-import { computed, inject } from '@angular/core';
+import { computed, effect, inject } from '@angular/core';
 import {
   patchState,
   signalStore,
@@ -17,12 +17,12 @@ import {
 } from '@ngrx/signals/entities';
 import { TransactionRecord, TransactionType } from '../types';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { map, mergeMap, pipe, switchMap, tap } from 'rxjs';
+import { catchError, map, mergeMap, pipe, switchMap, tap } from 'rxjs';
 import { BankDataService } from './bank-data.service';
 import { tapResponse } from '@ngrx/operators';
 export const BankingStore = signalStore(
   withDevtools('banking-store'),
-  withState({ balance: 0, loaded: false }),
+  withState({ balance: 0, loaded: false, hasError: false }),
   withEntities({
     collection: '_settledTransactions',
     entity: type<TransactionRecord>(),
@@ -46,6 +46,10 @@ export const BankingStore = signalStore(
                   { balance: b, loaded: true },
                   addEntities(r, { collection: '_settledTransactions' })
                 );
+              }),
+              catchError((e) => {
+                patchState(store, { hasError: true });
+                return '';
               })
             )
           )
@@ -148,6 +152,20 @@ export const BankingStore = signalStore(
   withHooks({
     onInit(store) {
       store._load();
+
+      effect(() => {
+        // this is super sus, needs a big code review. ;)
+        let retryId: any = 0;
+        if (store.hasError() === true) {
+          let retryId = setInterval(() => {
+            store._load();
+          }, 1000);
+        } else {
+          if (retryId) {
+            clearInterval(retryId);
+          }
+        }
+      });
     },
   })
 );

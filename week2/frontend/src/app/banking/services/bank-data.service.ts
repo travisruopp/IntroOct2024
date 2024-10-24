@@ -74,6 +74,7 @@ export class BankDataService {
       .pipe(
         tap((r) => {
           const results = BankResponseSchema.safeParse(r);
+
           if (results.error) {
             console.log('There was an error', results.error);
             throw new Error('Bad Response from API');
